@@ -1,5 +1,7 @@
 # Discord Logger
 
+[![NuGet](https://img.shields.io/nuget/v/DiscordLogger.svg)](https://www.nuget.org/packages/DiscordLogger/)
+
 A .NET 8.0 library that provides Discord webhook logging capabilities for .NET applications using the Microsoft.Extensions.Logging framework.
 
 Inspired by https://github.com/ithr0n/DiscordLogging

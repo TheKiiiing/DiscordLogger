@@ -21,6 +21,10 @@ public class DiscordLoggerOptions
     /// The default value is `LogLevel.Information`.
     public LogLevel MinLogLevel { get; set; } = LogLevel.Information;
 
+    /// Specifies the log level at which mentions are included in the log messages sent to Discord.
+    /// This property helps in highlighting critical log messages that require immediate attention.
+    public LogLevel MentionLogLevel { get; set; } = LogLevel.Error;
+
     /// Specifies the interval at which messages will be sent to Discord.
     /// The default value is 2 seconds.
     public TimeSpan SendInterval  { get; set; } = TimeSpan.FromSeconds(2);

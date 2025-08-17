@@ -47,6 +47,11 @@ internal class DiscordLogger(string name, DiscordLoggerOptions options, IDiscord
             logMessage.File = new MemoryStream(Encoding.UTF8.GetBytes(message));
         }
 
+        if (logLevel >= options.MentionLogLevel)
+        {
+            logMessage.Mention = true;
+        }
+
         loggingService.AddLogMessage(logMessage);
     }
 

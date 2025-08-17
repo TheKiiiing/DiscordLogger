@@ -26,6 +26,7 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : I
     private async Task SendLoop()
     {
         const int max_embeds = 10;
+        const string mention = "||@everyone||";
         var client = new DiscordWebhookClient(options.Value.WebhookUrl);
         var embeds = new List<Embed>(max_embeds);
         var currentBatch = new List<DiscordLogMessage>(options.Value.IntervalMessageLimit);
@@ -45,7 +46,17 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : I
             {
                 if (message.File != null)
                 {
-                    await client.SendFileAsync(message.File, $"log_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt", "Log file", embeds: [message.Embed]);
+                    await client.SendFileAsync(
+                        message.File,
+                        filename: $"log_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt",
+                        text: "Log File" + (message.Mention ? mention : String.Empty),
+                        embeds: [message.Embed],
+                        allowedMentions: AllowedMentions.All
+                    );
+                }
+                else if (message.Mention)
+                {
+                    await client.SendMessageAsync(mention, embeds: [message.Embed], allowedMentions: AllowedMentions.All);
                 }
                 else
                 {
