@@ -11,9 +11,11 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : I
     private readonly CancellationTokenSource _cts = new();
     private readonly ConcurrentQueue<DiscordLogMessage> _logMessages = new();
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         _ = Task.Factory.StartNew(SendLoop, TaskCreationOptions.LongRunning);
+
+        return Task.CompletedTask;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)

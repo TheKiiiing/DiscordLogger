@@ -4,10 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace DiscordLogger;
 
+/// <summary>
+/// Provides extension methods for adding a Discord logger to the logging builder.
+/// </summary>
 public static class LoggingBuilderExtensions
 {
     /// <summary>
-    /// Adds a Discord logger to the logging builder, utilizing the provided configuration section.
+    /// Adds a Discord logger to the logging builder, using the provided configuration section.
     /// </summary>
     /// <param name="builder">The logging builder to which the Discord logger will be added.</param>
     /// <param name="configurationSection">The configuration section containing settings for the Discord logger. See <see cref="DiscordLoggerOptions"/> for all available config options</param>
@@ -44,7 +47,9 @@ public static class LoggingBuilderExtensions
     /// <returns>The updated logging builder with the Discord logger added.</returns>
     public static ILoggingBuilder AddDiscord(this ILoggingBuilder builder)
     {
-        builder.Services.AddHostedService<DiscordLoggingService>();
+        builder.Services.AddSingleton<DiscordLoggingService>();
+        builder.Services.AddSingleton<IDiscordLoggingService>(s => s.GetRequiredService<DiscordLoggingService>());
+        builder.Services.AddHostedService<DiscordLoggingService>(s => s.GetRequiredService<DiscordLoggingService>());
         builder.Services.AddSingleton<ILoggerProvider, DiscordLoggerProvider>();
 
         return builder;

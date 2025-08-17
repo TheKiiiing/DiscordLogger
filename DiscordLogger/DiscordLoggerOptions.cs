@@ -3,8 +3,15 @@ using Microsoft.Extensions.Logging;
 
 namespace DiscordLogger;
 
+/// <summary>
+/// Represents the configuration options for the Discord Logger.
+/// </summary>
 public class DiscordLoggerOptions
 {
+    /// Defines the Discord Webhook URL used to send log messages.
+    /// This URL is essential for the logger to communicate with the Discord channel.
+    /// It must be a valid, active Discord webhook endpoint.
+    /// The property must be explicitly set; it cannot be null or empty.
     [Required]
     public string WebhookUrl { get; set; } = null!;
 

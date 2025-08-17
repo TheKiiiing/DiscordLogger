@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -12,7 +13,7 @@
         <Version>1.0.0</Version>
         <Authors>TheKiiiing</Authors>
         <Description>A .NET 8.0 library that provides Discord webhook logging capabilities for .NET applications using the Microsoft.Extensions.Logging framework.</Description>
-        <PackageTags>utilities;library</PackageTags>
+        <PackageTags>utilities;library;logging;discord;log</PackageTags>
 <!--      TODO  <RepositoryUrl>https://github.com/your/repo</RepositoryUrl>-->
     </PropertyGroup>
 
