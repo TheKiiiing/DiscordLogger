@@ -12,7 +12,7 @@ Add Discord logging to your application's service collection:
 ```csharp
 // Program.cs or Startup.cs
 
-using DiscordLogging;
+using DiscordLogger;
 
 // Configure your Discord webhook URL and other options directly
 builder.Logging.AddDiscord(options =>
@@ -28,7 +28,7 @@ builder.Logging.AddDiscord(builder.Configuration.GetSection("Logging:Discord"));
 ## Configuration
 
 All available config options can be found in [DiscordLoggerOptions.cs](DiscordLogging/DiscordLoggerOptions.cs).
-Configure the Discord logger options in your `appsettings.json`:
+Configure the Discord logger options in `appsettings.json`:
 
 ```json
 {
@@ -36,7 +36,6 @@ Configure the Discord logger options in your `appsettings.json`:
     "Discord": {
       "WebhookUrl": "https://discord.com/api/webhooks/your-webhook",
       "MinLogLevel": "Information"
-      // Add other configuration options as needed
     }
   }
 }

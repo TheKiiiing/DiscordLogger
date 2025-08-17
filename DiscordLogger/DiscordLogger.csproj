@@ -14,7 +14,7 @@
         <Authors>TheKiiiing</Authors>
         <Description>A .NET 8.0 library that provides Discord webhook logging capabilities for .NET applications using the Microsoft.Extensions.Logging framework.</Description>
         <PackageTags>utilities;library;logging;discord;log</PackageTags>
-<!--      TODO  <RepositoryUrl>https://github.com/your/repo</RepositoryUrl>-->
+        <RepositoryUrl>https://github.com/TheKiiiing/DiscordLogger</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>

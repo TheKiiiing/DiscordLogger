@@ -33,7 +33,8 @@ internal class DiscordLogger(string name, DiscordLoggerOptions options, IDiscord
                 LogLevel.Error => Color.Red,
                 LogLevel.Critical => Color.DarkRed,
                 _ => Color.DarkGrey
-            }
+            },
+            Timestamp = DateTime.Now,
         };
 
         var logMessage = new DiscordLogMessage
