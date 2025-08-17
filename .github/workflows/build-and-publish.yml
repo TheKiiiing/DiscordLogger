@@ -3,6 +3,8 @@ name: Build and Publish NuGet Package
 on:
   push:
     tags: ["*"]
+  workflow_dispatch:
+  
 
 jobs:
   build:
