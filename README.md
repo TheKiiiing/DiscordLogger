@@ -29,7 +29,7 @@ builder.Logging.AddDiscord(builder.Configuration.GetSection("Logging:Discord"));
 
 ## Configuration
 
-All available config options can be found in [DiscordLoggerOptions.cs](DiscordLogging/DiscordLoggerOptions.cs).
+All available config options can be found in [DiscordLoggerOptions.cs](DiscordLogger/DiscordLoggerOptions.cs).
 Configure the Discord logger options in `appsettings.json`:
 
 ```json
