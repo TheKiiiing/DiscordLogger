@@ -19,7 +19,12 @@ internal class DiscordLogger(string name, DiscordLoggerOptions options, IDiscord
 
         var message = formatter(state, exception);
 
-        // Character limit for embed descriptions
+        if (exception != null)
+        {
+            message += "\n" + exception.ToString();
+        }
+
+        // Character limit for embed descriptions is 4096
         var needsFile = message.Length > 4096;
 
         var embed = new EmbedBuilder()
