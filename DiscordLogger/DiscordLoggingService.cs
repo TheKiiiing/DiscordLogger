@@ -26,7 +26,8 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : I
     private async Task SendLoop()
     {
         const int max_embeds = 10;
-        const string mention = "||@everyone||";
+        const string mention = "@everyone";
+        
         var client = new DiscordWebhookClient(options.Value.WebhookUrl);
         var embeds = new List<Embed>(max_embeds);
         var currentBatch = new List<DiscordLogMessage>(options.Value.IntervalMessageLimit);
