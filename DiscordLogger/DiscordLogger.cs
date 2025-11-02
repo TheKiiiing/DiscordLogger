@@ -31,14 +31,7 @@ internal class DiscordLogger(string name, DiscordLoggerOptions options, IDiscord
         {
             Title = $"[{GetLogLevelName(logLevel)}] {name}",
             Description = needsFile ? "*Log message is too big and is attached as file*" : message,
-            Color = logLevel switch
-            {
-                LogLevel.Information => Color.LightGrey,
-                LogLevel.Warning => Color.Gold,
-                LogLevel.Error => Color.Red,
-                LogLevel.Critical => Color.DarkRed,
-                _ => Color.DarkGrey
-            },
+            Color = GetLogLevelColor(logLevel),
             Timestamp = DateTime.Now,
         };
 
@@ -60,8 +53,19 @@ internal class DiscordLogger(string name, DiscordLoggerOptions options, IDiscord
         loggingService.AddLogMessage(logMessage);
     }
 
+    private static Color GetLogLevelColor(LogLevel logLevel) => logLevel switch
+    {
+        LogLevel.Information => Color.LightGrey,
+        LogLevel.Warning => Color.Gold,
+        LogLevel.Error => Color.Red,
+        LogLevel.Critical => Color.DarkRed,
+        _ => Color.DarkGrey
+    };
+
     private static string GetLogLevelName(LogLevel logLevel) => logLevel switch
     {
+        LogLevel.Trace => "TRACE",
+        LogLevel.Debug => "DEBUG",
         LogLevel.Information => "INFO",
         LogLevel.Warning => "WARN",
         LogLevel.Error => "ERROR",

@@ -2,12 +2,16 @@
 using Discord;
 using Discord.Webhook;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace DiscordLogger;
 
-internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : IDiscordLoggingService, IHostedService
+internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options, ILogger<DiscordLoggingService> logger) : IDiscordLoggingService, IHostedService
 {
+    private const int MAX_EMBEDS = 10;
+    private const string MENTION = "@everyone";
+
     private readonly CancellationTokenSource _cts = new();
     private readonly ConcurrentQueue<DiscordLogMessage> _logMessages = new();
 
@@ -25,54 +29,67 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : I
 
     private async Task SendLoop()
     {
-        const int max_embeds = 10;
-        const string mention = "@everyone";
-        
         var client = new DiscordWebhookClient(options.Value.WebhookUrl);
-        var embeds = new List<Embed>(max_embeds);
+        var embeds = new List<Embed>(MAX_EMBEDS);
         var currentBatch = new List<DiscordLogMessage>(options.Value.IntervalMessageLimit);
 
         while (!_cts.IsCancellationRequested)
         {
             await Task.Delay(options.Value.SendInterval, _cts.Token);
 
-            currentBatch.Clear();
-            while (_logMessages.TryDequeue(out var message))
+            try
             {
-                currentBatch.Add(message);
+                currentBatch.Clear();
+                while (_logMessages.TryDequeue(out var message))
+                {
+                    currentBatch.Add(message);
+                }
+
+                await DoSend(currentBatch, client, embeds);
             }
-            
-            
-            foreach (var message in currentBatch)
+            catch (Exception e)
             {
-                if (message.File != null)
+                if (options.Value.LogDiscordExceptions)
                 {
-                    await client.SendFileAsync(
-                        message.File,
-                        filename: $"log_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt",
-                        text: "Log File" + (message.Mention ? mention : String.Empty),
-                        embeds: [message.Embed],
-                        allowedMentions: AllowedMentions.All
-                    );
-                }
-                else if (message.Mention)
-                {
-                    await client.SendMessageAsync(mention, embeds: [message.Embed], allowedMentions: AllowedMentions.All);
-                }
-                else
-                {
-                    embeds.Add(message.Embed);
-                }
-                
-                if (embeds.Count >= max_embeds)
-                {
-                    await SendEmbeds();
+                    logger.LogError(e, "Error sending log message to Discord");
                 }
             }
-            
-            // Send remaining embeds
-            await SendEmbeds();
         }
+    }
+
+    private async Task DoSend(List<DiscordLogMessage> currentBatch, DiscordWebhookClient client, List<Embed> embeds)
+    {
+        var mention = options.Value.MentionOverride ?? MENTION;
+
+        foreach (var message in currentBatch)
+        {
+            if (message.File != null)
+            {
+                await client.SendFileAsync(
+                    message.File,
+                    filename: $"log_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt",
+                    text: ("Log File " + (message.Mention ? mention : String.Empty)).Trim(),
+                    embeds: [message.Embed],
+                    allowedMentions: AllowedMentions.All
+                );
+            }
+            else if (message.Mention)
+            {
+                await client.SendMessageAsync(mention, embeds: [message.Embed], allowedMentions: AllowedMentions.All);
+            }
+            else
+            {
+                embeds.Add(message.Embed);
+            }
+
+            if (embeds.Count >= MAX_EMBEDS)
+            {
+                await SendEmbeds();
+            }
+        }
+
+        // Send remaining embeds
+        await SendEmbeds();
         return;
 
         async Task SendEmbeds()

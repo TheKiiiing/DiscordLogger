@@ -12,10 +12,10 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <PackageId>DiscordLogger</PackageId>
-        <Version>1.0.3</Version>
+        <Version>1.0.4</Version>
         <Authors>TheKiiiing</Authors>
         <Description>A .NET 8.0 library that provides Discord webhook logging capabilities for .NET applications using the Microsoft.Extensions.Logging framework.</Description>
-        <PackageTags>utilities;library;logging;discord;log</PackageTags>
+        <PackageTags>utilities;library;logging;discord;log;microsoft.extensions.logging</PackageTags>
         <RepositoryUrl>https://github.com/TheKiiiing/DiscordLogger</RepositoryUrl>
     </PropertyGroup>
 
