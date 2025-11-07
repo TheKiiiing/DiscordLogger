@@ -2,12 +2,11 @@
 using Discord;
 using Discord.Webhook;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace DiscordLogger;
 
-internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options, ILogger<DiscordLoggingService> logger) : IDiscordLoggingService, IHostedService
+internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options) : IDiscordLoggingService, IHostedService
 {
     private const int MAX_EMBEDS = 10;
     private const string MENTION = "@everyone";
@@ -49,10 +48,7 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options, ILo
             }
             catch (Exception e)
             {
-                if (options.Value.LogDiscordExceptions)
-                {
-                    logger.LogError(e, "Error sending log message to Discord");
-                }
+                await Console.Error.WriteLineAsync($"[DISCORD LOGGER] Error sending log message to Discord: {e}");
             }
         }
     }
@@ -63,19 +59,20 @@ internal class DiscordLoggingService(IOptions<DiscordLoggerOptions> options, ILo
 
         foreach (var message in currentBatch)
         {
+            var text = $"{mention} {message.Embed.Title}";
             if (message.File != null)
             {
                 await client.SendFileAsync(
                     message.File,
                     filename: $"log_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.txt",
-                    text: ("Log File " + (message.Mention ? mention : String.Empty)).Trim(),
+                    text: text,
                     embeds: [message.Embed],
                     allowedMentions: AllowedMentions.All
                 );
             }
             else if (message.Mention)
             {
-                await client.SendMessageAsync(mention, embeds: [message.Embed], allowedMentions: AllowedMentions.All);
+                await client.SendMessageAsync(text, embeds: [message.Embed], allowedMentions: AllowedMentions.All);
             }
             else
             {
